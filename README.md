@@ -37,6 +37,8 @@ conda activate harl
 git clone https://github.com/PKU-MARL/HARL.git
 cd HARL
 pip install -e .
+# Optional: install tested LBF v3 + VMAS dependencies together
+pip install -e ".[lbf-vmas]"
 ```
 
 
@@ -99,6 +101,19 @@ pip install gym[atari]
 pip install autorom[accept-rom-license]
 ```
 
+**Install LBF v3 and VMAS (for `env=gym`)**
+
+The following versions are tested in this fork on Python 3.8:
+
+```shell
+pip install gym==0.26.2 gymnasium==1.1.1 lbforaging==2.0.0 "vmas[gymnasium]==1.4.3"
+```
+
+LBF scenarios are used through `--scenario lbforaging:<env-id>` (e.g., `lbforaging:Foraging-8x8-2p-1f-v3`).
+VMAS scenarios are used through `--scenario vmas-<scenario>` (e.g., `vmas-balance`) and `--n_agents <N>`.
+
+For Python 3.8 users: HARL's VMAS wrapper includes an argparse compatibility shim so VMAS can be imported safely during training.
+
 **Install MuJoCo**
 
 First, follow the instructions on https://github.com/openai/mujoco-py, https://www.roboti.us/, and https://github.com/deepmind/mujoco to download the right version of mujoco you need.
@@ -148,6 +163,8 @@ pip install pyglet==1.5.0
 pip install importlib-metadata==4.13.0
 ```
 
+If you plan to run **LBF v3 / VMAS** via `env=gym`, keep the tested stack from the `lbf-vmas` extra instead of downgrading Gym to `0.21.0`.
+
 If you encounter issues when using `pip install gym==0.21.0`, try using the following command instead:
 
 ```
@@ -162,6 +179,16 @@ conda install -c conda-forge gym=0.21.0
 ### Training on Existing Environments
 
 To train an algorithm on a provided environment, users can modify yaml configuration files of the corresponding algorithm and environment under `harl/configs/algos_cfgs` and `harl/configs/envs_cfgs` as they wish, go to `examples` folder, and then start training with a one-liner `python train.py --algo <ALGO> --env <ENV> --exp_name <EXPERIMENT NAME>` or `python train.py --load_config <CONFIG FILE PATH> --exp_name <EXPERIMENT NAME>`, where the latter is mostly used when reproducing an experiment. We provide the **tuned configurations** for algorithms in each environments under `tuned_configs` folder. Users can **reproduce our results** by using `python train.py --load_config <TUNED CONFIG PATH> --exp_name <EXPERIMENT NAME>` and change `<TUNED CONFIG PATH>` to the absolute path of the tuned config file on their machine.
+
+Examples for HAPPO on LBF v3 / VMAS through `env=gym`:
+
+```shell
+# HAPPO on LBF v3
+python examples/train.py --algo happo --env gym --exp_name happo_lbf --scenario lbforaging:Foraging-8x8-2p-1f-v3
+
+# HAPPO on VMAS (set n_agents explicitly)
+python examples/train.py --algo happo --env gym --exp_name happo_vmas --scenario vmas-balance --n_agents 5
+```
 
 During training, users receive continuous logging feedback in the terminal.
 

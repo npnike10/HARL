@@ -16,6 +16,14 @@ setup(
         "tensorboardX",
         "setproctitle",
     ],
+    extras_require={
+        "lbf-vmas": [
+            "gym==0.26.2",
+            "gymnasium==1.1.1",
+            "lbforaging==2.0.0",
+            "vmas[gymnasium]==1.4.3",
+        ],
+    },
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3.8",
